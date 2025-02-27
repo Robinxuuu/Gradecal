@@ -11,13 +11,15 @@ matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 def get_user_input():
     st.title("成绩计算仪表盘")
     courses = []
-    num_courses = st.number_input("输入课程数量", min_value=1, step=1)
+    num_courses = st.number_input("输入课程数量", min_value=1, step=1, key="num_courses")
     for i in range(num_courses):
-        course_name = st.text_input(f"输入课程 {i + 1} 的名称:")
-        credits = st.number_input(f"请输入 {course_name} 的学分:", min_value=1.0, step=1.0)
-        max_score = st.number_input(f"请输入 {course_name} 的评分满分 (如100, 4.0, 20等):", min_value=1.0, step=1.0)
+        course_name = st.text_input(f"输入课程 {i + 1} 的名称:", key=f"course_name_{i}")
+        credits = st.number_input(f"请输入 {course_name} 的学分:", min_value=1.0, step=1.0, key=f"credits_{i}")
+        max_score = st.number_input(f"请输入 {course_name} 的评分满分 (如100, 4.0, 20等):",
+                                    min_value=1.0, step=1.0, key=f"max_score_{i}")
         assignments = []
-        num_assignments = st.number_input(f"输入 {course_name} 的作业/考试数量:", min_value=1, step=1)
+        num_assignments = st.number_input(f"输入 {course_name} 的作业/考试数量:", min_value=1, step=1,
+                                          key=f"num_assignments_{i}")
         for j in range(num_assignments):
             assignment_name = st.text_input(f"  输入 {course_name} 的作业/考试 {j + 1} 名称:",
                                             key=f"{course_name}_{j}_name")
