@@ -7,27 +7,28 @@ import matplotlib
 matplotlib.rcParams['font.sans-serif'] = ['SimHei']  # 黑体
 matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
-
 def get_user_input():
     st.title("成绩计算仪表盘")
     courses = []
     num_courses = st.number_input("输入课程数量", min_value=1, step=1, key="num_courses")
+    
     for i in range(num_courses):
         course_name = st.text_input(f"输入课程 {i + 1} 的名称:", key=f"course_name_{i}")
-        credits = st.number_input(f"请输入 {course_name} 的学分:", min_value=1.0, step=1.0, key=f"credits_{i}")
-        max_score = st.number_input(f"请输入 {course_name} 的评分满分 (如100, 4.0, 20等):",
+        credits = st.number_input(f"请输入 {course_name or f'课程_{i + 1}'} 的学分:", min_value=1.0, step=1.0, key=f"credits_{i}")
+        max_score = st.number_input(f"请输入 {course_name or f'课程_{i + 1}'} 的评分满分 (如100, 4.0, 20等):",
                                     min_value=1.0, step=1.0, key=f"max_score_{i}")
         assignments = []
-        num_assignments = st.number_input(f"输入 {course_name} 的作业/考试数量:", min_value=1, step=1,
+        num_assignments = st.number_input(f"输入 {course_name or f'课程_{i + 1}'} 的作业/考试数量:", min_value=1, step=1,
                                           key=f"num_assignments_{i}")
+        
         for j in range(num_assignments):
-            assignment_name = st.text_input(f"  输入 {course_name} 的作业/考试 {j + 1} 名称:",
-                                            key=f"{course_name}_{j}_name")
-            weight = st.number_input(f"  请输入 {assignment_name} 在 {course_name} 中的占比 (如 0.3 表示 30%):",
-                                     min_value=0.0, max_value=1.0, step=0.01, key=f"{course_name}_{j}_weight")
+            assignment_name = st.text_input(f"  输入 {course_name or f'课程_{i + 1}'} 的作业/考试 {j + 1} 名称:",
+                                            key=f"assignment_name_{i}_{j}")
+            weight = st.number_input(f"  请输入 {assignment_name or f'作业_{j + 1}'} 在 {course_name or f'课程_{i + 1}'} 中的占比 (如 0.3 表示 30%):",
+                                     min_value=0.0, max_value=1.0, step=0.01, key=f"weight_{i}_{j}")
             score_input = st.text_input(
-                f"  请输入 {assignment_name} 已出成绩 (如未出分则输入 'NA'):",
-                key=f"{course_name}_{assignment_name}_score"
+                f"  请输入 {assignment_name or f'作业_{j + 1}'} 已出成绩 (如未出分则输入 'NA'):",
+                key=f"score_{i}_{j}"
             )
 
             if not score_input.strip():
@@ -41,10 +42,9 @@ def get_user_input():
                 except ValueError:
                     score = None  # 如果输入无效，设为 None
 
-            assignments.append({'name': assignment_name, 'weight': weight, 'score': score})
-        courses.append({'name': course_name, 'credits': credits, 'max_score': max_score, 'assignments': assignments})
+            assignments.append({'name': assignment_name or f"作业_{j + 1}", 'weight': weight, 'score': score})
+        courses.append({'name': course_name or f"课程_{i + 1}", 'credits': credits, 'max_score': max_score, 'assignments': assignments})
     return courses
-
 
 def calculate_current_average(courses):
     total_credits = sum(course['credits'] for course in courses)
